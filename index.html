@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin-top: 50px;
+        }
+        video, canvas {
+            border: 2px solid #333;
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Capture</h1>
+    <video id="camera" autoplay playsinline></video>
+    <button onclick="takePicture()">Take Picture</button>
+    <canvas id="snapshot" style="display: none;"></canvas>
+
+    <script>
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('snapshot');
+        const context = canvas.getContext('2d');
+
+        // Request permission to use the camera
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                alert('Camera access denied or not supported.');
+            }
+        }
+
+        // Function to take a picture
+        function takePicture() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // Display the captured image
+            canvas.style.display = 'block';
+            video.style.display = 'none';
+
+            // Optionally, download the image
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'fuckmeintheballs.png';
+            link.click();
+        }
+
+        // Start the camera on page load
+        startCamera();
+    </script>
+</body>
+</html>
